@@ -23,5 +23,13 @@ namespace ContactManager.Controllers
         {
             return contactRepository.GetAllContacts();
         }
+
+        [HttpPost]
+        public ActionResult<Contact> Post([FromBody] Contact contact)
+        {
+            this.contactRepository.SaveContact(contact);
+
+            return CreatedAtAction(nameof(Get), new { id = contact.Id }, contact);
+        }
     }
 }

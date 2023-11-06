@@ -1,6 +1,20 @@
 ﻿<div id="body">
     <ul id="contacts"></ul>
 </div>
+
+<form id="saveContactForm" method="post">
+<h3>Create a new Contact</h3>
+<p>
+    <label for="contactId">Contact Id:</label>
+    <input type="text" name="Id" />
+</p>
+<p>
+    <label for="contactName">Contact Name:</label>
+    <input type="text" name="Name" />
+</p>
+<input type="button" id="saveContact" value="Save" />
+</form>
+
 @section scripts{
 <script type="text/javascript">
 $(function()
@@ -9,9 +23,39 @@ $(function()
         {
             $(contactsJsonPayload).each(function(i, item)
             {
-                $('#contacts').append('<li>' + item.Name + '</li>');
+                $('#contacts').append('<li>' + item.name + '</li>');
             });
         });
+
+
+        $('#saveContact').click(function() {
+            var formData = $("#saveContactForm").serializeArray();
+            var object = {};
+            $.each(formData, function() {
+                if (object[this.name] !== undefined) {
+                    if (!object[this.name].push) {
+                        object[this.name] = [object[this.name]];
+                    }
+                    object[this.name].push(this.value || '');
+                } else {
+                    object[this.name] = this.value || '';
+                }
+            });
+
+            $.ajax({
+                url: "api/contact",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(object),
+                success: function(value) {
+                    $('#contacts').append('<li>' + value.name + '</li>');
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error('Error:', textStatus, errorThrown);
+                }
+            });
+        });
+
 });
 </script>
 }
