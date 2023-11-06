@@ -10,10 +10,12 @@ namespace ContactManager.Controllers
     public class ContactController : ControllerBase
     {
         private ContactRepository contactRepository;
+        private IHttpContextAccessor _httpContextAccessor;
 
-        public ContactController()
+        public ContactController(IHttpContextAccessor httpContextAccessor)
         {
-            this.contactRepository = new ContactRepository();
+            this._httpContextAccessor = httpContextAccessor;
+            this.contactRepository = new ContactRepository(httpContextAccessor);
         }
 
         [HttpGet]
